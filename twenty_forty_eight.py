@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # game object class
 class Board:
@@ -11,10 +12,40 @@ class Board:
             for y in range(self.height):
                 self.board[x][y] = 0
 
-    def Board(self):
-        __init__(self)
+    def is_board_full(self):
+        all_full = True
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.board[x][y] == 0:
+                    # empty spot is found
+                    all_full = False
+        return all_full
 
-    #def update(self):
+    def _update(self, num):
+        """helper function for update, caller has to check that there is an empty spot"""
+        x_rand = random.randint(0, self.width - 1)
+        y_rand = random.randint(0, self.height - 1)
+        if self.board[x_rand][y_rand] == 0:
+            self.board[x_rand][y_rand] = num
+            return True
+        else:
+            self._update(num)
+
+    def update(self, num):
+        """fill a random (uniform) open spot on the board with num"""
+        # error checking
+        if self.is_board_full() == True or num < 0:
+            return False
+        else:
+            self._update(num)
+
+    def set_number(self, i, j, num):
+        """set board position i,j with num greater or eq to 0"""
+        if i > self.width or j > self.height or num < 0:
+            return False
+        else:
+            self.board[i][j] = num
+            return True
 
     def print_stdout(self):
         string_line = ""
@@ -31,20 +62,14 @@ class Board:
             string_line += str(y) + " "
         print(string_line)
 
+    def shift_board_left(self):
+        """shifts the board left, combines same numbers"""
+        for i in range(self.width):
+            for j in range(self.height, 0):
+                self.board[i][j]
 
-
-pygame.init()
-
-display_width = 600
-display_height = 600
-
-game_display = pygame.display.set_mode((display_width, display_height))
-pygame.display.set_caption('2048 Python')
-#background = pygame.Surface(game_display.get_size())
-#background = background.convert()
-#background.fill((255, 255, 255))
-
-clock = pygame.time.Clock()
+    def get_board(self):
+        return self.board
 
 def game_loop():
     left, right, up, down = False, False, False, False
@@ -72,12 +97,24 @@ def game_loop():
 
         pygame.display.update()
         clock.tick(60)
-        print("{} {} {} {}".format(left, right, up, down))
+        #print("{} {} {} {}".format(left, right, up, down))
 
+if __name__ == "__main__":
+    pygame.init()
 
+    display_width = 600
+    display_height = 600
 
-bb = Board()
+    game_display = pygame.display.set_mode((display_width, display_height))
+    pygame.display.set_caption('2048 Python')
 
-game_loop()
-pygame.quit()
-quit()
+    clock = pygame.time.Clock()
+
+    # initialize board
+    bb = Board()
+    bb.update(2)
+    bb.update(4)
+
+    game_loop()
+    pygame.quit()
+    quit()
