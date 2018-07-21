@@ -62,11 +62,40 @@ class Board:
             string_line += str(y) + " "
         print(string_line)
 
+    def shift_array(self, arr, length):
+        """shift the values in the array such that equal and adjacent numbers combine
+        and that the array has all its zeros at the higher index i.e. (2, 0, 4, 4, 8)
+        will become (2, 8, 8, 0, 0)"""
+        for n in range(length):
+            for m in range(n+1, length, 1):
+                if arr[n] == arr[m] and arr[n] != 0:
+                    arr[n] = arr[n] + arr[m]
+                    arr[m] = 0
+                    break
+                elif arr[n] == 0 and arr[m] != 0:
+                    arr[n] = arr[m]
+                    arr[m] = 0
+                    break
+                elif arr[m] != 0:
+                    break
+        return arr
+
     def shift_board_left(self):
         """shifts the board left, combines same numbers"""
         for i in range(self.width):
-            for j in range(self.height, 0):
-                self.board[i][j]
+            for j in range(self.height):
+                for m in range(j + 1, self.height, 1):
+                    if self.board[i][j] == self.board[i][m] and self.board[i][j] != 0:
+                        self.board[i][j] = self.board[i][j] + self.board[i][m]
+                        self.board[i][m] = 0
+                        break
+                    elif self.board[i][j] == 0 and self.board[i][m] != 0:
+                        self.board[i][j] = self.board[i][m]
+                        self.board[i][m] = 0
+                        break
+                    elif self.board[i][m] != 0:
+                        break
+        return
 
     def get_board(self):
         return self.board
