@@ -12,6 +12,17 @@ class Board:
             for y in range(self.height):
                 self.board[x][y] = 0
 
+    def set_number(self, i, j, num):
+        """set board position i,j with num greater or eq to 0"""
+        if i > self.width or i < 0 or j > self.height or j < 0 or num < 0:
+            return False
+        else:
+            self.board[i][j] = num
+            return True
+
+    def get_board(self):
+        return self.board
+
     def is_board_full(self):
         all_full = True
         for x in range(self.width):
@@ -38,14 +49,6 @@ class Board:
             return False
         else:
             self._update(num)
-
-    def set_number(self, i, j, num):
-        """set board position i,j with num greater or eq to 0"""
-        if i > self.width or j > self.height or num < 0:
-            return False
-        else:
-            self.board[i][j] = num
-            return True
 
     def print_stdout(self):
         string_line = ""
@@ -97,8 +100,6 @@ class Board:
                         break
         return
 
-    def get_board(self):
-        return self.board
 
 def game_loop():
     left, right, up, down = False, False, False, False
