@@ -82,6 +82,19 @@ class TestBoard(unittest.TestCase):
         self.assertTrue(b.board[1][0] == 0)
         self.assertTrue(b.board[2][0] == 4)
         self.assertTrue(b.board[3][0] == 4)
+        b.set_number(1, 0, 2)
+        b.shift_board_down()
+        self.assertTrue(b.board[0][0] == 0)
+        self.assertTrue(b.board[1][0] == 0)
+        self.assertTrue(b.board[2][0] == 2)
+        self.assertTrue(b.board[3][0] == 8)
+        b.shift_board_down()
+        self.assertTrue(b.board[0][0] == 0)
+        self.assertTrue(b.board[1][0] == 0)
+        self.assertTrue(b.board[2][0] == 2)
+        self.assertTrue(b.board[3][0] == 8)
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -87,20 +87,6 @@ class Board:
         """shifts the board left, combines same numbers"""
         for i in range(self.width):
             self.board[i] = self.shift_array(self.board[i], self.height)
-            """
-            for j in range(self.height):
-                for m in range(j + 1, self.height, 1):
-                    if self.board[i][j] == self.board[i][m] and self.board[i][j] != 0:
-                        self.board[i][j] = self.board[i][j] + self.board[i][m]
-                        self.board[i][m] = 0
-                        break
-                    elif self.board[i][j] == 0 and self.board[i][m] != 0:
-                        self.board[i][j] = self.board[i][m]
-                        self.board[i][m] = 0
-                        break
-                    elif self.board[i][m] != 0:
-                        break
-            """
         return
 
     def shift_board_right(self):
@@ -118,15 +104,15 @@ class Board:
 
     def shift_board_down(self):
         for j in range(self.height):
-            new_col_arr = self.shift_array([row[j] for row in self.board], self.width)
+            new_col_arr = [row[j] for row in self.board]
+            new_col_arr = self.shift_array(new_col_arr[::-1], self.width)
             for i in range(self.width):
                 self.board[i][j] = new_col_arr[self.width - 1 - i]
         return
 
 
 
-def game_loop():
-    left, right, up, down = False, False, False, False
+def game_loop(board):
     game_exit = False
 
     while not game_exit:
@@ -136,22 +122,20 @@ def game_loop():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                left, right, up, down = False, False, False, False
                 if event.key == pygame.K_LEFT:
-                    left = True
+                    board.shift_board_left()
                 if event.key == pygame.K_RIGHT:
-                    right = True
+                    board.shift_board_right()
                 if event.key == pygame.K_UP:
-                    up = True
+                    board.shift_board_up()
                 if event.key == pygame.K_DOWN:
-                    down = True
+                    board.shift_board_down()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                    left, right, up, down = False, False, False, False
+                    board.print_stdout()
 
         pygame.display.update()
         clock.tick(60)
-        #print("{} {} {} {}".format(left, right, up, down))
 
 if __name__ == "__main__":
     pygame.init()
@@ -165,10 +149,10 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     # initialize board
-    bb = Board()
-    bb.update(2)
-    bb.update(4)
+    b = Board()
+    b.update(2)
+    b.update(4)
 
-    game_loop()
+    game_loop(b)
     pygame.quit()
     quit()
