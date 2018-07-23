@@ -86,6 +86,8 @@ class Board:
     def shift_board_left(self):
         """shifts the board left, combines same numbers"""
         for i in range(self.width):
+            self.board[i] = self.shift_array(self.board[i], self.height)
+            """
             for j in range(self.height):
                 for m in range(j + 1, self.height, 1):
                     if self.board[i][j] == self.board[i][m] and self.board[i][j] != 0:
@@ -98,7 +100,29 @@ class Board:
                         break
                     elif self.board[i][m] != 0:
                         break
+            """
         return
+
+    def shift_board_right(self):
+        """shifts the board left, combines same numbers"""
+        for i in range(self.width):
+            self.board[i][::-1] = self.shift_array(self.board[i][::-1], self.height)
+        return
+
+    def shift_board_up(self):
+        for j in range(self.height):
+            new_col_arr = self.shift_array([row[j] for row in self.board], self.width)
+            for i in range(self.width):
+                self.board[i][j] = new_col_arr[i]
+        return
+
+    def shift_board_down(self):
+        for j in range(self.height):
+            new_col_arr = self.shift_array([row[j] for row in self.board], self.width)
+            for i in range(self.width):
+                self.board[i][j] = new_col_arr[self.width - 1 - i]
+        return
+
 
 
 def game_loop():

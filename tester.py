@@ -41,44 +41,47 @@ class TestBoard(unittest.TestCase):
             b.update(2)
         self.assertTrue(b.is_board_full())
 
+    def test_board_shift_left(self):
+        b = Board()
+        b.set_number(0, 0, 2)
+        b.set_number(0, 1, 0)
+        b.set_number(0, 2, 2)
+        b.set_number(0, 3, 4)
+        b.shift_board_left()
+        self.assertTrue(b.board[0] == [4, 4, 0, 0])
 
+    def test_board_shift_right(self):
+        b = Board()
+        b.set_number(0, 0, 2)
+        b.set_number(0, 1, 0)
+        b.set_number(0, 2, 2)
+        b.set_number(0, 3, 4)
+        b.shift_board_right()
+        self.assertTrue(b.board[0] == [0, 0, 4, 4])
+
+    def test_board_shift_up(self):
+        b = Board()
+        b.set_number(0, 0, 2)
+        b.set_number(1, 0, 0)
+        b.set_number(2, 0, 2)
+        b.set_number(3, 0, 4)
+        b.shift_board_up()
+        self.assertTrue(b.board[0][0] == 4)
+        self.assertTrue(b.board[1][0] == 4)
+        self.assertTrue(b.board[2][0] == 0)
+        self.assertTrue(b.board[3][0] == 0)
+
+    def test_board_shift_down(self):
+        b = Board()
+        b.set_number(0, 0, 2)
+        b.set_number(1, 0, 0)
+        b.set_number(2, 0, 2)
+        b.set_number(3, 0, 4)
+        b.shift_board_down()
+        self.assertTrue(b.board[0][0] == 0)
+        self.assertTrue(b.board[1][0] == 0)
+        self.assertTrue(b.board[2][0] == 4)
+        self.assertTrue(b.board[3][0] == 4)
 
 if __name__ == "__main__":
     unittest.main()
-
-    bb = Board()
-    bb.print_stdout()
-    bb.update(2)
-    bb.print_stdout()
-    bb.update(2)
-    bb.print_stdout()
-    bb.update(4)
-    bb.print_stdout()
-    bb.update(2)
-    bb.update(4)
-    bb.update(2)
-    bb.update(2)
-    bb.update(4)
-    bb.update(2)
-    bb.update(2)
-    bb.update(4)
-    bb.update(2)
-    bb.update(2)
-    bb.update(4)
-    bb.update(2)
-    bb.update(2)
-    bb.update(4)
-    bb.update(2)
-    bb.print_stdout()
-
-
-    # test 3
-    bb.set_number(0,0,2)
-    bb.set_number(0,1,0)
-    bb.set_number(0,2,2)
-    bb.set_number(0,3,4)
-    bb.shift_board_left()
-    if bb.board[0] == [4, 4, 0, 0]:
-        print("test 3 passed")
-    else:
-        print("test 3 failed")

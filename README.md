@@ -10,3 +10,6 @@ The main logic class for the game, 4x4 grid.  The methods include:
  `update`
  `print_stdout`
  `shift_board_left`
+ `shift_board_right`
+ `shift_board_up`
+ `shift_board_down`
