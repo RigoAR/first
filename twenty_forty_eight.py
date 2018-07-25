@@ -23,6 +23,10 @@ class Board:
     def get_board(self):
         return self.board
 
+    def set_board(self, board):
+        self.board = board
+        return True
+
     def is_board_full(self):
         all_full = True
         for x in range(self.width):
@@ -110,13 +114,34 @@ class Board:
                 self.board[i][j] = new_col_arr[self.width - 1 - i]
         return
 
+    def is_game_finished(self):
+        game_finished = True
+        for i in range(self.width - 1):
+            for j in range(self.height - 1):
+                if i + 1 < self.width and self.board[i][j] == self.board[i+1][j]:
+                    game_finished = False
+                if j + 1 < self.height and self.board[i][j] == self.board[i][j+1]:
+                    game_finished = False
+        return game_finished
 
+def update_board(board):
+    """75% chance update board with 2, 25% change update board with a 4"""
+    if (random.randint[0,4] == 0):
+        board.update(4)
+    else:
+        board.update(2)
+    return
+
+def display(board):
+    board.print_stdout()
+    return
 
 def game_loop(board):
     game_exit = False
 
     while not game_exit:
 
+        # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -124,18 +149,25 @@ def game_loop(board):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     board.shift_board_left()
+                    update_board(board)
                 if event.key == pygame.K_RIGHT:
                     board.shift_board_right()
+                    update_board(board)
                 if event.key == pygame.K_UP:
                     board.shift_board_up()
+                    update_board(board)
                 if event.key == pygame.K_DOWN:
                     board.shift_board_down()
+                    update_board(board)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                    board.print_stdout()
+                    pass
 
+        # view board
+        display(board)
         pygame.display.update()
         clock.tick(60)
+        game_exit = board.is_game_finished()
 
 if __name__ == "__main__":
     pygame.init()
@@ -149,10 +181,10 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     # initialize board
-    b = Board()
-    b.update(2)
-    b.update(4)
+    board = Board()
+    board.update(2)
+    board.update(4)
 
-    game_loop(b)
+    game_loop(board)
     pygame.quit()
     quit()

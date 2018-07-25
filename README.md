@@ -13,3 +13,4 @@ The main logic class for the game, 4x4 grid.  The methods include:
  `shift_board_right`
  `shift_board_up`
  `shift_board_down`
+ `is_game_finished`

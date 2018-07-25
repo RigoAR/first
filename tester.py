@@ -2,6 +2,15 @@ from twenty_forty_eight import Board
 import unittest
 
 class TestBoard(unittest.TestCase):
+    def setUp(self):
+        self.b_full = Board()
+        self.b_full.set_board([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+        self.b = Board()
+        self.b.set_board([[2, 2, 0, 4], [2, 0, 8, 8], [0, 2, 0, 2], [4, 0, 0, 0]])
+
+    def tearDown(self):
+        pass
+
     def test_set_number(self):
         b = Board()
         self.assertTrue(b.set_number(0,0,2))
@@ -13,6 +22,7 @@ class TestBoard(unittest.TestCase):
         self.assertFalse(b.set_number(0,-1,1))
         self.assertFalse(b.set_number(0,5,1))
         self.assertFalse(b.set_number(1,1,-1))
+
 
     def test_get_board(self):
         b = Board()
@@ -93,6 +103,11 @@ class TestBoard(unittest.TestCase):
         self.assertTrue(b.board[1][0] == 0)
         self.assertTrue(b.board[2][0] == 2)
         self.assertTrue(b.board[3][0] == 8)
+
+    def test_is_game_finished(self):
+        self.assertTrue(self.b_full.is_game_finished())
+        self.b_full.set_number(0, 0, 2)
+        self.assertFalse(self.b_full.is_game_finished())
 
 
 
