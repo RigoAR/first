@@ -126,7 +126,7 @@ class Board:
 
 def update_board(board):
     """75% chance update board with 2, 25% change update board with a 4"""
-    if (random.randint[0,4] == 0):
+    if random.randint(0, 3) == 0:
         board.update(4)
     else:
         board.update(2)
