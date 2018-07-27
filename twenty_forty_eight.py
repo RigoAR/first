@@ -125,15 +125,15 @@ class Board:
         return game_finished
 
 def update_board(board):
-    """75% chance update board with 2, 25% change update board with a 4"""
-    if random.randint(0, 3) == 0:
+    """90% chance update board with 2, 10% change update board with a 4"""
+    if random.randint(0, 10) == 0:
         board.update(4)
     else:
         board.update(2)
     return
 
 def display(board):
-    board.print_stdout()
+    #board.print_stdout()
     return
 
 def game_loop(board):
@@ -176,9 +176,19 @@ if __name__ == "__main__":
     display_height = 600
 
     game_display = pygame.display.set_mode((display_width, display_height))
-    pygame.display.set_caption('2048 Python')
+    pygame.display.set_caption('2048')
 
     clock = pygame.time.Clock()
+
+    # backgroud
+    background = pygame.Surface(game_display.get_size())
+    background = background.convert()
+    background.fill((255, 255, 255))
+
+    #table = pygame.load_tile_table("", 4, 4)
+
+    #game_display.blit(background, (0, 0))
+
 
     # initialize board
     board = Board()
