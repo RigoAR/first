@@ -108,6 +108,15 @@ class TestBoard(unittest.TestCase):
         self.assertTrue(self.b_full.is_game_finished())
         self.b_full.set_number(0, 0, 2)
         self.assertFalse(self.b_full.is_game_finished())
+        self.b_full.set_number(0, 0, 1)
+        self.b_full.set_number(3, 3, 15)
+        self.assertFalse(self.b_full.is_game_finished())
+        self.b_full.set_number(3, 3, 0)
+        self.assertFalse(self.b_full.is_game_finished())
+        self.b_full.set_number(3, 3, 16)
+        self.b_full.set_number(2, 3, 0)
+        self.assertFalse(self.b_full.is_game_finished())
+
 
 
 

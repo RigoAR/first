@@ -1,12 +1,19 @@
 import pygame
 import random
 
+# Color Definitions
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 153, 76)
+
 # game object class
 class Board:
     """4x4 grid of integers representing the game board"""
     def __init__(self):
         self.width = 4
         self.height = 4
+        self.tile_pixel_size = 80   # size of side for square tile
+        self.tile_font_size = 50    # pixels for tile fonts
         self.board = [[0 for x in range(self.width)] for y in range(self.height)]
         for x in range(self.width):
             for y in range(self.height):
@@ -115,14 +122,27 @@ class Board:
         return
 
     def is_game_finished(self):
-        game_finished = True
-        for i in range(self.width - 1):
-            for j in range(self.height - 1):
+        """checks each element in array if spot to it's right and bottom are equal"""
+        for i in range(self.width):
+            for j in range(self.height):
+                if self.board[i][j] == 0:
+                    return False
                 if i + 1 < self.width and self.board[i][j] == self.board[i+1][j]:
-                    game_finished = False
+                    return False
                 if j + 1 < self.height and self.board[i][j] == self.board[i][j+1]:
-                    game_finished = False
-        return game_finished
+                    return False
+        return True
+
+    def draw_tile(self, i, j):
+        if i < 0 or j < 0 or i >= self.width or j >= self.height:
+            return False
+        tile_object = pygame.Surface((self.tile_pixel_size, self.tile_pixel_size))
+        tile_object.fill(GREEN)
+        tile_font = pygame.font.Font(None, self.tile_font_size)
+        tile_text = tile_font.render(str(self.board[i][j]), True, WHITE)
+        tile_object.blit(tile_text, tile_object.get_rect().center)
+        return tile_object
+
 
 def update_board(board):
     """90% chance update board with 2, 10% change update board with a 4"""
@@ -132,11 +152,21 @@ def update_board(board):
         board.update(2)
     return
 
-def display(board):
-    #board.print_stdout()
+def draw_display(display, board):
+    """takes current display and draws the board"""
+    bg = pygame.Surface(game_display.get_size())
+    bg = bg.convert()
+    bg.fill(BLACK)
+    display.blit(bg, (0, 0))
+    for i in range(board.width):
+        for j in range(board.height):
+            tile_object = board.draw_tile(i, j)
+            display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size))
+    pygame.display.flip()
+    board.print_stdout()
     return
 
-def game_loop(board):
+def game_loop(screen, board):
     game_exit = False
 
     while not game_exit:
@@ -164,8 +194,8 @@ def game_loop(board):
                     pass
 
         # view board
-        display(board)
-        pygame.display.update()
+        draw_display(screen, board)
+        #pygame.display.update()
         clock.tick(60)
         game_exit = board.is_game_finished()
 
@@ -175,6 +205,7 @@ if __name__ == "__main__":
     display_width = 600
     display_height = 600
 
+    # screen
     game_display = pygame.display.set_mode((display_width, display_height))
     pygame.display.set_caption('2048')
 
@@ -183,18 +214,17 @@ if __name__ == "__main__":
     # backgroud
     background = pygame.Surface(game_display.get_size())
     background = background.convert()
-    background.fill((255, 255, 255))
-
-    #table = pygame.load_tile_table("", 4, 4)
-
-    #game_display.blit(background, (0, 0))
-
+    background.fill(BLACK)
+    game_display.blit(background, (0, 0))
+    pygame.display.flip()
 
     # initialize board
     board = Board()
     board.update(2)
     board.update(4)
 
-    game_loop(board)
+    draw_display(game_display, board)
+
+    game_loop(game_display, board)
     pygame.quit()
     quit()
