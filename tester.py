@@ -23,6 +23,14 @@ class TestBoard(unittest.TestCase):
         self.assertFalse(b.set_number(0,5,1))
         self.assertFalse(b.set_number(1,1,-1))
 
+    def test_shift_array(self):
+        b = Board()
+        b.set_board([[4, 4, 4, 4], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+        b.shift_board_left()
+        self.assertTrue(b.get_row(0) == [8, 8, 0, 0])
+        b.set_row(3, [2, 2, 4, 4])  # row numb then List
+        b.shift_board_right()
+        self.assertTrue(b.get_row(3) == [0, 0, 4, 8])
 
     def test_get_board(self):
         b = Board()
@@ -59,6 +67,13 @@ class TestBoard(unittest.TestCase):
         b.set_number(0, 3, 4)
         b.shift_board_left()
         self.assertTrue(b.board[0] == [4, 4, 0, 0])
+
+        b.set_number(3, 0, 0)
+        b.set_number(3, 1, 0)
+        b.set_number(3, 2, 4)
+        b.set_number(3, 3, 4)
+        b.shift_board_left()
+        self.assertTrue(b.board[3] == [8, 0, 0, 0])
 
     def test_board_shift_right(self):
         b = Board()

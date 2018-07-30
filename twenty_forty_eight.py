@@ -6,14 +6,28 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 153, 76)
 
+# Display color choices
+TILE_COLOR = GREEN
+TILE_TEXT_COLOR = WHITE
+TILE_BORDER_COLOR = WHITE
+
+BOARD_BACKGROUND_COLOR = WHITE
+
+# Display dimensions
+DISPLAY_WIDTH = 324
+DISPLAY_HEIGHT = 324
+
+BORDER_SIZE = 2         # tile border size in pixels
+
 # game object class
 class Board:
     """4x4 grid of integers representing the game board"""
     def __init__(self):
         self.width = 4
         self.height = 4
-        self.tile_pixel_size = 80   # size of side for square tile
-        self.tile_font_size = 50    # pixels for tile fonts
+        self.tile_pixel_size = 80               # size of side for square tile
+        self.tile_font_size = 40                # pixels for tile fonts
+        self.tile_border_size = BORDER_SIZE     # tile border size
         self.board = [[0 for x in range(self.width)] for y in range(self.height)]
         for x in range(self.width):
             for y in range(self.height):
@@ -56,7 +70,7 @@ class Board:
     def update(self, num):
         """fill a random (uniform) open spot on the board with num"""
         # error checking
-        if self.is_board_full() == True or num < 0:
+        if self.is_board_full() or num < 0:
             return False
         else:
             self._update(num)
@@ -87,9 +101,11 @@ class Board:
                     arr[m] = 0
                     break
                 elif arr[n] == 0 and arr[m] != 0:
+                    # if current spot is 0 and next spot is occupied, put next spot into the current
+                    # spot and check to see if the next next occupied spot can be combined
+                    # i.e. we want (0, 0, 4, 4) -> (8, 0, 0, 0) not (4, 4, 0, 0)
                     arr[n] = arr[m]
                     arr[m] = 0
-                    break
                 elif arr[m] != 0:
                     break
         return arr
@@ -136,12 +152,43 @@ class Board:
     def draw_tile(self, i, j):
         if i < 0 or j < 0 or i >= self.width or j >= self.height:
             return False
+
+        # create tile and fill in with color
         tile_object = pygame.Surface((self.tile_pixel_size, self.tile_pixel_size))
-        tile_object.fill(GREEN)
+        tile_object.fill(TILE_COLOR)
+
+        # add text
         tile_font = pygame.font.Font(None, self.tile_font_size)
-        tile_text = tile_font.render(str(self.board[i][j]), True, WHITE)
-        tile_object.blit(tile_text, tile_object.get_rect().center)
-        return tile_object
+        tile_text = tile_font.render(str(self.board[i][j]), True, TILE_TEXT_COLOR)
+        text_pos = tile_text.get_rect()
+        text_pos.center = tile_object.get_rect().center
+        tile_object.blit(tile_text, text_pos)
+
+        # draw border
+        tile_with_border = pygame.Surface((self.tile_pixel_size + 2*self.tile_border_size, self.tile_pixel_size + 2*self.tile_border_size))
+        tile_with_border.fill(TILE_BORDER_COLOR)
+        tile_with_border.blit(tile_object, (self.tile_border_size, self.tile_border_size))
+
+        return tile_with_border
+
+    def get_row(self, row_num):
+        if row_num < 0 or row_num >= self.width:
+            return False
+        return self.board[row_num]
+
+    def get_col(self, col_num):
+        if col_num < 0 or col_num >= self.height:
+            return False
+        out_board = self.height * [0]
+        for j in range(self.height):
+            out_board[j] = self.board[col_num][j]
+        return out_board
+
+    def set_row(self, row_num, new_row):
+        if len(new_row) != self.width or row_num < 0 or row_num >= self.width:
+            return False
+        self.board[row_num] = new_row
+        return True
 
 
 def update_board(board):
@@ -156,14 +203,17 @@ def draw_display(display, board):
     """takes current display and draws the board"""
     bg = pygame.Surface(game_display.get_size())
     bg = bg.convert()
-    bg.fill(BLACK)
+    bg.fill(BOARD_BACKGROUND_COLOR)
     display.blit(bg, (0, 0))
     for i in range(board.width):
         for j in range(board.height):
+            # draw tile
             tile_object = board.draw_tile(i, j)
             display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size))
+    # display
     pygame.display.flip()
-    board.print_stdout()
+    # debug
+    #board.print_stdout()
     return
 
 def game_loop(screen, board):
@@ -196,25 +246,22 @@ def game_loop(screen, board):
         # view board
         draw_display(screen, board)
         #pygame.display.update()
-        clock.tick(60)
+        #clock.tick(60)
         game_exit = board.is_game_finished()
 
 if __name__ == "__main__":
     pygame.init()
 
-    display_width = 600
-    display_height = 600
-
     # screen
-    game_display = pygame.display.set_mode((display_width, display_height))
+    game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     pygame.display.set_caption('2048')
 
-    clock = pygame.time.Clock()
+    #clock = pygame.time.Clock()
 
     # backgroud
     background = pygame.Surface(game_display.get_size())
     background = background.convert()
-    background.fill(BLACK)
+    background.fill(BOARD_BACKGROUND_COLOR)
     game_display.blit(background, (0, 0))
     pygame.display.flip()
 
