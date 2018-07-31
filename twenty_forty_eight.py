@@ -12,10 +12,12 @@ TILE_TEXT_COLOR = WHITE
 TILE_BORDER_COLOR = WHITE
 
 BOARD_BACKGROUND_COLOR = WHITE
+SCORE_TEXT_COLOR = BLACK
 
 # Display dimensions
 DISPLAY_WIDTH = 324
 DISPLAY_HEIGHT = 324
+DISPLAY_UPPER_PANEL_OFFSET = 80
 
 BORDER_SIZE = 2         # tile border size in pixels
 
@@ -28,10 +30,8 @@ class Board:
         self.tile_pixel_size = 80               # size of side for square tile
         self.tile_font_size = 40                # pixels for tile fonts
         self.tile_border_size = BORDER_SIZE     # tile border size
-        self.board = [[0 for x in range(self.width)] for y in range(self.height)]
-        for x in range(self.width):
-            for y in range(self.height):
-                self.board[x][y] = 0
+        self.score = 0                          # current score
+        self.board = [[0 for i in range(self.width)] for j in range(self.height)]   # create empty board of 0's
 
     def set_number(self, i, j, num):
         """set board position i,j with num greater or eq to 0"""
@@ -42,7 +42,12 @@ class Board:
             return True
 
     def get_board(self):
-        return self.board
+        """deep copy and return board"""
+        new_board = [[0 for i in range(self.width)] for j in range(self.height)]
+        for i in range(self.width):
+            for j in range(self.height):
+                new_board[i][j] = self.board[i][j]
+        return new_board
 
     def set_board(self, board):
         self.board = board
@@ -50,19 +55,19 @@ class Board:
 
     def is_board_full(self):
         all_full = True
-        for x in range(self.width):
-            for y in range(self.height):
-                if self.board[x][y] == 0:
+        for i in range(self.width):
+            for j in range(self.height):
+                if self.board[i][j] == 0:
                     # empty spot is found
                     all_full = False
         return all_full
 
     def _update(self, num):
         """helper function for update, caller has to check that there is an empty spot"""
-        x_rand = random.randint(0, self.width - 1)
-        y_rand = random.randint(0, self.height - 1)
-        if self.board[x_rand][y_rand] == 0:
-            self.board[x_rand][y_rand] = num
+        i_rand = random.randint(0, self.width - 1)
+        j_rand = random.randint(0, self.height - 1)
+        if self.board[i_rand][j_rand] == 0:
+            self.board[i_rand][j_rand] = num
             return True
         else:
             self._update(num)
@@ -75,19 +80,27 @@ class Board:
         else:
             self._update(num)
 
+    def update_board(self):
+        """90% chance update board with 2, 10% change update board with a 4"""
+        if random.randint(0, 10) == 0:
+            self.update(4)
+        else:
+            self.update(2)
+        return
+
     def print_stdout(self):
         string_line = ""
-        for x in range(self.width):
+        for i in range(self.width):
             # print row number and all of that rows values
-            string_line = string_line + str(x) + " "
-            for y in range(self.height):
-                string_line = string_line + str(self.board[x][y]) + " "
+            string_line = string_line + str(i) + " "
+            for j in range(self.height):
+                string_line = string_line + str(self.board[i][j]) + " "
             print(string_line)
             string_line = ""
         # print column numbers at the bottom
         string_line += "  "
-        for y in range(self.height):
-            string_line += str(y) + " "
+        for i in range(self.height):
+            string_line += str(i) + " "
         print(string_line)
 
     def shift_array(self, arr, length):
@@ -99,6 +112,7 @@ class Board:
                 if arr[n] == arr[m] and arr[n] != 0:
                     arr[n] = arr[n] + arr[m]
                     arr[m] = 0
+                    self.score += arr[n]
                     break
                 elif arr[n] == 0 and arr[m] != 0:
                     # if current spot is 0 and next spot is occupied, put next spot into the current
@@ -117,12 +131,13 @@ class Board:
         return
 
     def shift_board_right(self):
-        """shifts the board left, combines same numbers"""
+        """shifts the board right, combines same numbers"""
         for i in range(self.width):
             self.board[i][::-1] = self.shift_array(self.board[i][::-1], self.height)
         return
 
     def shift_board_up(self):
+        """shifts the board up, combines same numbers"""
         for j in range(self.height):
             new_col_arr = self.shift_array([row[j] for row in self.board], self.width)
             for i in range(self.width):
@@ -130,6 +145,7 @@ class Board:
         return
 
     def shift_board_down(self):
+        """shifts the board down, combines same numbers"""
         for j in range(self.height):
             new_col_arr = [row[j] for row in self.board]
             new_col_arr = self.shift_array(new_col_arr[::-1], self.width)
@@ -171,6 +187,20 @@ class Board:
 
         return tile_with_border
 
+    def draw_score(self):
+        # create score tile
+        score_panel = pygame.Surface((DISPLAY_WIDTH, DISPLAY_UPPER_PANEL_OFFSET))
+        score_panel.fill(BOARD_BACKGROUND_COLOR)
+
+        # add score text
+        score_font = pygame.font.Font(None, self.tile_font_size)
+        score_string = "Score: " + str(self.score)
+        score_text = score_font.render(score_string, True, SCORE_TEXT_COLOR)
+        text_pos = score_text.get_rect()
+        text_pos.centery = score_panel.get_rect().centery
+        score_panel.blit(score_text, text_pos)
+        return score_panel
+
     def get_row(self, row_num):
         if row_num < 0 or row_num >= self.width:
             return False
@@ -191,25 +221,21 @@ class Board:
         return True
 
 
-def update_board(board):
-    """90% chance update board with 2, 10% change update board with a 4"""
-    if random.randint(0, 10) == 0:
-        board.update(4)
-    else:
-        board.update(2)
-    return
-
 def draw_display(display, board):
     """takes current display and draws the board"""
     bg = pygame.Surface(game_display.get_size())
     bg = bg.convert()
     bg.fill(BOARD_BACKGROUND_COLOR)
     display.blit(bg, (0, 0))
+    # draws tiles
     for i in range(board.width):
         for j in range(board.height):
             # draw tile
             tile_object = board.draw_tile(i, j)
-            display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size))
+            display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size + DISPLAY_UPPER_PANEL_OFFSET))
+    # draws score panel
+    score_panel = board.draw_score()
+    display.blit(score_panel, (0, 0))
     # display
     pygame.display.flip()
     # debug
@@ -227,18 +253,24 @@ def game_loop(screen, board):
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
+                # store previous board
+                prev_board = board.get_board()
+                # check events
                 if event.key == pygame.K_LEFT:
                     board.shift_board_left()
-                    update_board(board)
+                    #board.update_board()
                 if event.key == pygame.K_RIGHT:
                     board.shift_board_right()
-                    update_board(board)
+                    #board.update_board()
                 if event.key == pygame.K_UP:
                     board.shift_board_up()
-                    update_board(board)
+                    #board.update_board()
                 if event.key == pygame.K_DOWN:
                     board.shift_board_down()
-                    update_board(board)
+                    #board.update_board()
+                # check if board state changed, then update
+                if prev_board != board.get_board():
+                    board.update_board()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     pass
@@ -253,7 +285,7 @@ if __name__ == "__main__":
     pygame.init()
 
     # screen
-    game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
+    game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_UPPER_PANEL_OFFSET))
     pygame.display.set_caption('2048')
 
     #clock = pygame.time.Clock()
