@@ -5,6 +5,7 @@ import random
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 153, 76)
+GREY = (96,96,96)
 
 # Display color choices
 TILE_COLOR = GREEN
@@ -13,12 +14,16 @@ TILE_BORDER_COLOR = WHITE
 
 BOARD_BACKGROUND_COLOR = WHITE
 SCORE_TEXT_COLOR = BLACK
+MENU_COLOR = GREY
+MENU_TEXT_COLOR = WHITE
 
 # Display dimensions
 DISPLAY_WIDTH = 324
 DISPLAY_HEIGHT = 324
-DISPLAY_UPPER_PANEL_OFFSET = 80
+DISPLAY_UPPER_PANEL_OFFSET = 80     # score panel
+DISPLAY_MENU_SIZE = 30              # panel offset from the top for menu
 
+MENU_FONT_SIZE = 20
 BORDER_SIZE = 2         # tile border size in pixels
 
 # game object class
@@ -73,7 +78,7 @@ class Board:
             self._update(num)
 
     def update(self, num):
-        """fill a random (uniform) open spot on the board with num"""
+        """fill a random (uniform) open spot on the board with num, if already occupied try again"""
         # error checking
         if self.is_board_full() or num < 0:
             return False
@@ -89,6 +94,7 @@ class Board:
         return
 
     def print_stdout(self):
+        """prints the board to std out"""
         string_line = ""
         for i in range(self.width):
             # print row number and all of that rows values
@@ -154,7 +160,7 @@ class Board:
         return
 
     def is_game_finished(self):
-        """checks each element in array if spot to it's right and bottom are equal"""
+        """checks to see if the game is over, checks each element in board if spot to it's right and bottom are equal"""
         for i in range(self.width):
             for j in range(self.height):
                 if self.board[i][j] == 0:
@@ -220,6 +226,18 @@ class Board:
         self.board[row_num] = new_row
         return True
 
+def draw_menu():
+    menu = pygame.Surface((DISPLAY_WIDTH, DISPLAY_MENU_SIZE))
+    menu.fill(MENU_COLOR)
+
+    # add score text
+    menu_font = pygame.font.Font(None, MENU_FONT_SIZE)
+    menu_string = "Save"
+    menu_text = menu_font.render(menu_string, True, MENU_TEXT_COLOR)
+    text_pos = menu_text.get_rect()
+    text_pos.centery = menu.get_rect().centery
+    menu.blit(menu_text, text_pos)
+    return menu
 
 def draw_display(display, board):
     """takes current display and draws the board"""
@@ -232,10 +250,13 @@ def draw_display(display, board):
         for j in range(board.height):
             # draw tile
             tile_object = board.draw_tile(i, j)
-            display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size + DISPLAY_UPPER_PANEL_OFFSET))
+            display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
+    # draw drop down menu
+    menu_panel = draw_menu()
+    display.blit(menu_panel, (0, 0))
     # draws score panel
     score_panel = board.draw_score()
-    display.blit(score_panel, (0, 0))
+    display.blit(score_panel, (0, DISPLAY_MENU_SIZE))
     # display
     pygame.display.flip()
     # debug
