@@ -340,7 +340,7 @@ if __name__ == "__main__":
     pygame.init()
 
     # screen
-    game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_UPPER_PANEL_OFFSET))
+    game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
     pygame.display.set_caption('2048')
 
     #clock = pygame.time.Clock()
