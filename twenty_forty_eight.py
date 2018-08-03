@@ -171,7 +171,8 @@ class Board:
                     return False
         return True
 
-    def draw_tile(self, i, j):
+    def draw_tile_with_border(self, i, j):
+        """draws a tile with a border"""
         if i < 0 or j < 0 or i >= self.width or j >= self.height:
             return False
 
@@ -227,16 +228,49 @@ class Board:
         return True
 
 def draw_menu():
+    number_of_buttons = 5
+    button_size = DISPLAY_WIDTH / number_of_buttons
     menu = pygame.Surface((DISPLAY_WIDTH, DISPLAY_MENU_SIZE))
     menu.fill(MENU_COLOR)
 
-    # add score text
+    # add menu options
     menu_font = pygame.font.Font(None, MENU_FONT_SIZE)
-    menu_string = "Save"
-    menu_text = menu_font.render(menu_string, True, MENU_TEXT_COLOR)
-    text_pos = menu_text.get_rect()
+
+    top_score_string = "Top Score"
+    top_score_text = menu_font.render(top_score_string, True, MENU_TEXT_COLOR)
+    text_pos = top_score_text.get_rect()
     text_pos.centery = menu.get_rect().centery
-    menu.blit(menu_text, text_pos)
+    text_pos.left = 5
+    menu.blit(top_score_text, text_pos)
+
+    save_string = "Save"
+    save_text = menu_font.render(save_string, True, MENU_TEXT_COLOR)
+    text_pos = save_text.get_rect()
+    text_pos.centery = menu.get_rect().centery
+    text_pos.left = 1.3 * button_size
+    menu.blit(save_text, text_pos)
+
+    load_string = "Load"
+    load_text = menu_font.render(load_string, True, MENU_TEXT_COLOR)
+    text_pos = load_text.get_rect()
+    text_pos.centery = menu.get_rect().centery
+    text_pos.left = 2 * button_size
+    menu.blit(load_text, text_pos)
+
+    undo_string = "Undo"
+    undo_text = menu_font.render(undo_string, True, MENU_TEXT_COLOR)
+    text_pos = undo_text.get_rect()
+    text_pos.centery = menu.get_rect().centery
+    text_pos.left = 2.7 * button_size
+    menu.blit(undo_text, text_pos)
+
+    exit_string = "Exit"
+    exit_text = menu_font.render(exit_string, True, MENU_TEXT_COLOR)
+    text_pos = exit_text.get_rect()
+    text_pos.centery = menu.get_rect().centery
+    text_pos.left = 4 * button_size
+    menu.blit(exit_text, text_pos)
+
     return menu
 
 def draw_display(display, board):
@@ -249,7 +283,7 @@ def draw_display(display, board):
     for i in range(board.width):
         for j in range(board.height):
             # draw tile
-            tile_object = board.draw_tile(i, j)
+            tile_object = board.draw_tile_with_border(i, j)
             display.blit(tile_object, (j * board.tile_pixel_size, i * board.tile_pixel_size + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
     # draw drop down menu
     menu_panel = draw_menu()

@@ -5,8 +5,6 @@ class TestBoard(unittest.TestCase):
     def setUp(self):
         self.b_full = Board()
         self.b_full.set_board([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
-        self.b = Board()
-        self.b.set_board([[2, 2, 0, 4], [2, 0, 8, 8], [0, 2, 0, 2], [4, 0, 0, 0]])
 
     def tearDown(self):
         pass
@@ -37,7 +35,7 @@ class TestBoard(unittest.TestCase):
         i = 0
         for x in range(b.width):
             for y in range(b.height):
-                b.set_number(x,y,i)
+                b.set_number(x, y, i)
                 i += 1
 
         d = b.get_board()
@@ -83,6 +81,9 @@ class TestBoard(unittest.TestCase):
         b.set_number(0, 3, 4)
         b.shift_board_right()
         self.assertTrue(b.board[0] == [0, 0, 4, 4])
+        b.set_row(3, [2, 0, 0, 0])
+        b.shift_board_right()
+        self.assertTrue(b.get_row(3) == [0, 0, 0, 2])
 
     def test_board_shift_up(self):
         b = Board()
