@@ -238,40 +238,65 @@ def draw_menu():
 
     top_score_string = "Top Score"
     top_score_text = menu_font.render(top_score_string, True, MENU_TEXT_COLOR)
-    text_pos = top_score_text.get_rect()
-    text_pos.centery = menu.get_rect().centery
-    text_pos.left = 5
-    menu.blit(top_score_text, text_pos)
+    top_score_pos = top_score_text.get_rect()
+    top_score_pos.centery = menu.get_rect().centery
+    top_score_pos.left = 5
+    menu.blit(top_score_text, top_score_pos)
 
     save_string = "Save"
     save_text = menu_font.render(save_string, True, MENU_TEXT_COLOR)
-    text_pos = save_text.get_rect()
-    text_pos.centery = menu.get_rect().centery
-    text_pos.left = 1.3 * button_size
-    menu.blit(save_text, text_pos)
+    save_pos = save_text.get_rect()
+    save_pos.centery = menu.get_rect().centery
+    save_pos.left = 1.3 * button_size
+    menu.blit(save_text, save_pos)
 
     load_string = "Load"
     load_text = menu_font.render(load_string, True, MENU_TEXT_COLOR)
-    text_pos = load_text.get_rect()
-    text_pos.centery = menu.get_rect().centery
-    text_pos.left = 2 * button_size
-    menu.blit(load_text, text_pos)
+    load_pos = load_text.get_rect()
+    load_pos.centery = menu.get_rect().centery
+    load_pos.left = 2 * button_size
+    menu.blit(load_text, load_pos)
 
     undo_string = "Undo"
     undo_text = menu_font.render(undo_string, True, MENU_TEXT_COLOR)
-    text_pos = undo_text.get_rect()
-    text_pos.centery = menu.get_rect().centery
-    text_pos.left = 2.7 * button_size
-    menu.blit(undo_text, text_pos)
+    undo_pos = undo_text.get_rect()
+    undo_pos.centery = menu.get_rect().centery
+    undo_pos.left = 2.7 * button_size
+    menu.blit(undo_text, undo_pos)
 
     exit_string = "Exit"
     exit_text = menu_font.render(exit_string, True, MENU_TEXT_COLOR)
-    text_pos = exit_text.get_rect()
-    text_pos.centery = menu.get_rect().centery
-    text_pos.left = 4 * button_size
-    menu.blit(exit_text, text_pos)
+    exit_pos = exit_text.get_rect()
+    exit_pos.centery = menu.get_rect().centery
+    exit_pos.left = 4 * button_size
+    menu.blit(exit_text, exit_pos)
+
+    # debug
+    #print("{} {} {} {} {}".format(top_score_pos, save_pos, load_pos, undo_pos, exit_pos))
 
     return menu
+
+def check_menu(mouse_position):
+    x, y = mouse_position
+
+    # debug
+    #print("{} {}".format(x, y))
+
+    if x > 281 or y > 30:
+        return
+
+    if 83 > x >= 0:
+        print("top score")
+    elif 128 - 10 > x >= 83:
+        print("save")
+    elif 172 - 5 > x >= 128:
+        print("load")
+    elif 256 - 40 > x >= 172:
+        print("undo")
+    elif 281 > x >= 256:
+        print("exit")
+
+    return
 
 def draw_display(display, board):
     """takes current display and draws the board"""
@@ -307,6 +332,8 @@ def game_loop(screen, board):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                check_menu(pygame.mouse.get_pos())
             if event.type == pygame.KEYDOWN:
                 # store previous board
                 prev_board = board.get_board()

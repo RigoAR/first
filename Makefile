@@ -1,3 +1,4 @@
+# Working on python 2.7
 
 run:
 	python twenty_forty_eight.py
