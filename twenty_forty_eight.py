@@ -276,20 +276,59 @@ def draw_menu():
 
     return menu
 
-def check_menu(mouse_position):
+def check_menu(mouse_position, board):
+    """
+    :param mouse_position: (x, y) tuple of position of mouse on click event
+    :param board: current board object to update
+    :return: nothing
+
+    Options:
+    save: saves the current game to a file, values separated by whitespace (saves over the file)
+    load: loads save.txt and sets as the current game
+    undo: reverts to last move
+    exit: quits the game
+    """
     x, y = mouse_position
 
     # debug
     #print("{} {}".format(x, y))
 
+    # out of bounds of menu
     if x > 281 or y > 30:
         return
 
     if 83 > x >= 0:
         print("top score")
     elif 128 - 10 > x >= 83:
+        # save current game
+        save_file_name = "save.txt"
+        save_file = open(save_file_name, "w")
+        # write score to first line in save file
+        write_score_to_file = str(board.score) + "\n"
+        save_file.write(write_score_to_file)
+        # write board to save file, whitespace delimiter
+        write_to_file_string = ""
+        for row in range(board.width):
+            for col in range (board.height):
+                write_to_file_string = write_to_file_string + str(board.board[row][col]) + " "
+            write_to_file_string = write_to_file_string + "\n"
+        save_file.write(write_to_file_string)
+        save_file.close()
         print("save")
     elif 172 - 5 > x >= 128:
+        # load save file
+        load_file_name = "save.txt"
+        load_file = open(load_file_name, "r")
+        # load score
+        score = load_file.readline()
+        score = score.split()
+        board.score = int(score[0])
+        # load board
+        for row in range(board.width):
+            line = load_file.readline()
+            line = line.split()
+            for col in range(board.height):
+                board.board[row][col] = int(line[col])
         print("load")
     elif 256 - 40 > x >= 172:
         print("undo")
@@ -333,7 +372,7 @@ def game_loop(screen, board):
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                check_menu(pygame.mouse.get_pos())
+                check_menu(pygame.mouse.get_pos(), board)
             if event.type == pygame.KEYDOWN:
                 # store previous board
                 prev_board = board.get_board()
