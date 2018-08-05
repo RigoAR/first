@@ -221,6 +221,12 @@ class Board:
             out_board[j] = self.board[col_num][j]
         return out_board
 
+    def get_score(self):
+        """
+        rtype: int
+        """
+        return self.score
+
     def set_row(self, row_num, new_row):
         if len(new_row) != self.width or row_num < 0 or row_num >= self.width:
             return False
@@ -298,6 +304,11 @@ def check_menu(mouse_position, board):
         return
 
     if 83 > x >= 0:
+        top_score_string = "top score: "
+        try:
+            ts_file = open("top_score.txt", "r")
+        except IOError:
+            print("No top score available")
         print("top score")
     elif 128 - 10 > x >= 83:
         # save current game
@@ -314,7 +325,7 @@ def check_menu(mouse_position, board):
             write_to_file_string = write_to_file_string + "\n"
         save_file.write(write_to_file_string)
         save_file.close()
-        print("save")
+        #print("save")
     elif 172 - 5 > x >= 128:
         # load save file
         load_file_name = "save.txt"
@@ -331,9 +342,12 @@ def check_menu(mouse_position, board):
                 board.board[row][col] = int(line[col])
         print("load")
     elif 256 - 40 > x >= 172:
-        print("undo")
+        #print("undo")
+        return -1
     elif 281 > x >= 256:
-        print("exit")
+        #print("exit")
+        pygame.quit()
+        quit()
 
     return
 
@@ -372,10 +386,15 @@ def game_loop(screen, board):
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                check_menu(pygame.mouse.get_pos(), board)
+                check_undo = check_menu(pygame.mouse.get_pos(), board)
+                if check_undo == -1:
+                    board.board = prev_board
+                    board.score = prev_score
+                    draw_display(screen, board)
             if event.type == pygame.KEYDOWN:
                 # store previous board
                 prev_board = board.get_board()
+                prev_score = board.get_score()
                 # check events
                 if event.key == pygame.K_LEFT:
                     board.shift_board_left()
@@ -390,7 +409,7 @@ def game_loop(screen, board):
                     board.shift_board_down()
                     #board.update_board()
                 # check if board state changed, then update
-                if prev_board != board.get_board():
+                if prev_board  != board.get_board():
                     board.update_board()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:

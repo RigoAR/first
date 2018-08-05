@@ -133,8 +133,10 @@ class TestBoard(unittest.TestCase):
         self.b_full.set_number(2, 3, 0)
         self.assertFalse(self.b_full.is_game_finished())
 
-
-
+    def test_get_score(self):
+        self.b_full.score = 20
+        board_score = self.b_full.get_score()
+        self.assertTrue(board_score == 20)
 
 if __name__ == "__main__":
     unittest.main()
