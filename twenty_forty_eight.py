@@ -293,7 +293,8 @@ def get_current_top_score():
         top_score_string = ""
         print("No top score available")
         return -1
-    print(top_score_string)
+    # debug
+    #print(top_score_string)
     return int(score)
 
 def set_current_top_score(score):
@@ -319,6 +320,7 @@ def check_menu(mouse_position, board):
     :return: nothing
 
     Options:
+    top score: outputs the top score of this game
     save: saves the current game to a file, values separated by whitespace (saves over the file)
     load: loads save.txt and sets as the current game
     undo: reverts to last move
@@ -339,15 +341,6 @@ def check_menu(mouse_position, board):
             print(top_score)
         else:
             print(board.get_score())
-        """
-        top_score_string = "top score: "
-        try:
-            ts_file = open("top_score.txt", "r")
-            top_score_string = top_score_string + str(ts_file.readline())
-        except IOError:
-            print("No top score available")
-        print(top_score_string)
-        """
     elif 128 - 10 > x >= 83:
         # save current game
         save_file_name = "save.txt"
@@ -363,6 +356,7 @@ def check_menu(mouse_position, board):
             write_to_file_string = write_to_file_string + "\n"
         save_file.write(write_to_file_string)
         save_file.close()
+        # debug
         #print("save")
     elif 172 - 5 > x >= 128:
         # load save file
@@ -378,11 +372,14 @@ def check_menu(mouse_position, board):
             line = line.split()
             for col in range(board.height):
                 board.board[row][col] = int(line[col])
-        print("load")
+        # debug
+        #print("load")
     elif 256 - 40 > x >= 172:
+        # debug
         #print("undo")
         return -1
     elif 281 > x >= 256:
+        # debug
         #print("exit")
         save_score_on_exit(board)
         pygame.quit()
@@ -458,7 +455,6 @@ def game_loop(screen, board):
         # view board
         draw_display(screen, board)
         #pygame.display.update()
-        #clock.tick(60)
         game_exit = board.is_game_finished()
 
 if __name__ == "__main__":
@@ -467,8 +463,6 @@ if __name__ == "__main__":
     # screen
     game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
     pygame.display.set_caption('2048')
-
-    #clock = pygame.time.Clock()
 
     # backgroud
     background = pygame.Surface(game_display.get_size())
