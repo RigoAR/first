@@ -282,6 +282,36 @@ def draw_menu():
 
     return menu
 
+def get_current_top_score():
+    top_score_string = "top score: "
+    try:
+        ts_file = open("top_score.txt", "r")
+        score = ts_file.readline().split()[0]
+        top_score_string = top_score_string + str(score)
+        ts_file.close()
+    except IOError:
+        top_score_string = ""
+        print("No top score available")
+        return -1
+    print(top_score_string)
+    return int(score)
+
+def set_current_top_score(score):
+    try:
+        ts_file = open("top_score.txt", "w")
+        ts_file.write(str(score) + "\n")
+        ts_file.close()
+    except IOError:
+        print("Topscore save failed")
+    return True
+
+def save_score_on_exit(board):
+    score = board.get_score()
+    top_score = get_current_top_score()
+    if top_score == -1 or score > top_score:
+        set_current_top_score(board.get_score())
+    return
+
 def check_menu(mouse_position, board):
     """
     :param mouse_position: (x, y) tuple of position of mouse on click event
@@ -304,12 +334,20 @@ def check_menu(mouse_position, board):
         return
 
     if 83 > x >= 0:
+        top_score = get_current_top_score()
+        if top_score >= board.get_score():
+            print(top_score)
+        else:
+            print(board.get_score())
+        """
         top_score_string = "top score: "
         try:
             ts_file = open("top_score.txt", "r")
+            top_score_string = top_score_string + str(ts_file.readline())
         except IOError:
             print("No top score available")
-        print("top score")
+        print(top_score_string)
+        """
     elif 128 - 10 > x >= 83:
         # save current game
         save_file_name = "save.txt"
@@ -320,7 +358,7 @@ def check_menu(mouse_position, board):
         # write board to save file, whitespace delimiter
         write_to_file_string = ""
         for row in range(board.width):
-            for col in range (board.height):
+            for col in range(board.height):
                 write_to_file_string = write_to_file_string + str(board.board[row][col]) + " "
             write_to_file_string = write_to_file_string + "\n"
         save_file.write(write_to_file_string)
@@ -346,6 +384,7 @@ def check_menu(mouse_position, board):
         return -1
     elif 281 > x >= 256:
         #print("exit")
+        save_score_on_exit(board)
         pygame.quit()
         quit()
 
@@ -383,6 +422,7 @@ def game_loop(screen, board):
         # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                save_score_on_exit(board)
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -445,5 +485,6 @@ if __name__ == "__main__":
     draw_display(game_display, board)
 
     game_loop(game_display, board)
+    save_score_on_exit(board)
     pygame.quit()
     quit()
