@@ -313,6 +313,21 @@ def save_score_on_exit(board):
         set_current_top_score(board.get_score())
     return
 
+def draw_message_over_screen(display, text):
+    """reduce opacity of the screen for a few seconds with the text message over the display, then revert back
+    to the original display"""
+    opacity = 50
+    message_and_screen = display.copy()
+    original_display = display.copy()
+    pygame.draw.rect(message_and_screen, (255, 0, 0, opacity), (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
+    display.blit(message_and_screen, (0, 0))
+    pygame.display.flip()
+    pygame.time.delay(100)
+    display.blit(original_display, (0, 0))
+    pygame.display.flip()
+    pygame.time.delay(100)
+    return
+
 def check_menu(mouse_position, board):
     """
     :param mouse_position: (x, y) tuple of position of mouse on click event
@@ -338,9 +353,13 @@ def check_menu(mouse_position, board):
     if 83 > x >= 0:
         top_score = get_current_top_score()
         if top_score >= board.get_score():
-            print(top_score)
+            return top_score
+            # debug
+            #print(top_score)
         else:
-            print(board.get_score())
+            return get_score()
+            # debug
+            #print(board.get_score())
     elif 128 - 10 > x >= 83:
         # save current game
         save_file_name = "save.txt"
