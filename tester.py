@@ -138,5 +138,10 @@ class TestBoard(unittest.TestCase):
         board_score = self.b_full.get_score()
         self.assertTrue(board_score == 20)
 
+    def test_set_column(self):
+        b = Board()
+        b.set_row(1, [4, 3, 2, 1])
+        self.assertTrue(b.get_row(1) == [4, 3, 2, 1])
+
 if __name__ == "__main__":
     unittest.main()
