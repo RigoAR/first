@@ -351,6 +351,7 @@ def check_menu(mouse_position, board):
         return
 
     if 83 > x >= 0:
+        # display top score
         top_score = get_current_top_score()
         if top_score >= board.get_score():
             return top_score
@@ -394,10 +395,12 @@ def check_menu(mouse_position, board):
         # debug
         #print("load")
     elif 256 - 40 > x >= 172:
+        # undo button
         # debug
         #print("undo")
         return -1
     elif 281 > x >= 256:
+        # exit button
         # debug
         #print("exit")
         save_score_on_exit(board)
@@ -431,6 +434,10 @@ def draw_display(display, board):
     return
 
 def game_loop(screen, board):
+    # initial previous board state
+    prev_board = board.get_board()
+    prev_score = board.get_score()
+
     game_exit = False
 
     while not game_exit:
