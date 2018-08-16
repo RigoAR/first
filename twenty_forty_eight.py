@@ -5,7 +5,7 @@ import random
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 153, 76)
-GREY = (96,96,96)
+GREY = (96, 96, 96)
 
 # Display color choices
 TILE_COLOR = GREEN
@@ -461,16 +461,12 @@ def game_loop(screen, board):
                 # check events
                 if event.key == pygame.K_LEFT:
                     board.shift_board_left()
-                    #board.update_board()
                 if event.key == pygame.K_RIGHT:
                     board.shift_board_right()
-                    #board.update_board()
                 if event.key == pygame.K_UP:
                     board.shift_board_up()
-                    #board.update_board()
                 if event.key == pygame.K_DOWN:
                     board.shift_board_down()
-                    #board.update_board()
                 # check if board state changed, then update
                 if prev_board  != board.get_board():
                     board.update_board()
