@@ -4,33 +4,50 @@ Implementation of the game 2048 in python.  Has features like save/load game and
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To get a copy of the project up and running, first clone the project and enter the folder
+
+```
+git clone https://github.com/jasondriver/2048
+cd 2048
+```
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+You will need to install the **pygame** package for this project.
 
 ```
 pip install pygame
 ```
 
-### Installing
+### Running
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+If you are on a **system with make**, just run
 
 ```
-Give the example
+make run menu
 ```
-
-And repeat
+for the version with a menu or
 
 ```
-until finished
+make run
 ```
+for no menu
 
-End with an example of getting some data out of the system or using it for a little demo
+If your system does not have make, run
+
+```
+python twenty_forty_eight.py -menu="on"
+```
+for the version with a menu or
+
+```
+python twenty_forty_eight.py
+```
+for no menu
+
+
+Put menu and no menu screen shots here
+
 
 ## Running the tests
 
@@ -44,7 +61,7 @@ or
 python -m unittest test_board_class.py.py
 ```
 
-### Break down into end to end tests
+### Break down of unit tests
 
 Tests the board class's 4 shifting methods, is board full method,  etc
 
