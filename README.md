@@ -13,7 +13,7 @@ cd 2048
 
 ### Prerequisites
 
-You will need to install the **pygame** package for this project.
+You will need the **pygame** package for this project.  To install:
 
 ```
 pip install pygame

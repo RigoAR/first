@@ -468,7 +468,7 @@ def game_loop(screen, board):
                 if event.key == pygame.K_DOWN:
                     board.shift_board_down()
                 # check if board state changed, then update
-                if prev_board  != board.get_board():
+                if prev_board != board.get_board():
                     board.update_board()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
