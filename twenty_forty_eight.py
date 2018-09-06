@@ -5,6 +5,7 @@ import random
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 153, 76)
+GREEN2 = pygame.Color('green2')
 GREY = (96, 96, 96)
 
 # Display color choices
@@ -16,6 +17,7 @@ BOARD_BACKGROUND_COLOR = WHITE
 SCORE_TEXT_COLOR = BLACK
 MENU_COLOR = GREY
 MENU_TEXT_COLOR = WHITE
+MESSAGE_OVER_SCREEN_COLOR = GREEN2
 
 # Display dimensions
 DISPLAY_WIDTH = 324
@@ -232,6 +234,7 @@ class Board:
             return False
         self.board[row_num] = new_row
         return True
+# end class Board
 
 def draw_menu():
     number_of_buttons = 5
@@ -307,32 +310,29 @@ def set_current_top_score(score):
     return True
 
 def save_score_on_exit(board):
+    """check current top score, if current game score is larger then save"""
     score = board.get_score()
     top_score = get_current_top_score()
     if top_score == -1 or score > top_score:
         set_current_top_score(board.get_score())
     return
 
-def draw_message_over_screen(display, text):
-    """reduce opacity of the screen for a few seconds with the text message over the display, then revert back
-    to the original display"""
-    opacity = 50
-    message_and_screen = display.copy()
-    original_display = display.copy()
-    pygame.draw.rect(message_and_screen, (255, 0, 0, opacity), (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
-    display.blit(message_and_screen, (0, 0))
+def draw_message_over_screen(screen, text):
+    """draws message over current screen"""
+    screen_rect = screen.get_rect()
+    font = pygame.font.Font(None, 50)
+    text_on_surface = font.render(text, True, MESSAGE_OVER_SCREEN_COLOR)
+    blink_rect = text_on_surface.get_rect()
+    blink_rect.center = screen_rect.center
+    screen.blit(text_on_surface, blink_rect)
     pygame.display.flip()
-    pygame.time.delay(100)
-    display.blit(original_display, (0, 0))
-    pygame.display.flip()
-    pygame.time.delay(100)
     return
 
 def check_menu(mouse_position, board):
     """
     :param mouse_position: (x, y) tuple of position of mouse on click event
     :param board: current board object to update
-    :return: nothing
+    :return: string explaining button pressed
 
     Options:
     top score: outputs the top score of this game
@@ -348,20 +348,16 @@ def check_menu(mouse_position, board):
 
     # out of bounds of menu
     if x > 281 or y > 30:
-        return
+        # No menu button pressed
+        return ""
 
     if 83 > x >= 0:
         # display top score
-        top_score = get_current_top_score()
-        if top_score >= board.get_score():
-            return top_score
-            # debug
-            #print(top_score)
-        else:
-            return get_score()
-            # debug
-            #print(board.get_score())
-    elif 128 - 10 > x >= 83:
+        top_score = max(get_current_top_score(), board.get_score())
+        # debug
+        #print("Top Score: " + str(top_score))
+        return "Top Score: " + str(top_score)
+    elif 118 > x >= 83:
         # save current game
         save_file_name = "save.txt"
         save_file = open(save_file_name, "w")
@@ -377,8 +373,9 @@ def check_menu(mouse_position, board):
         save_file.write(write_to_file_string)
         save_file.close()
         # debug
-        #print("save")
-    elif 172 - 5 > x >= 128:
+        #print("Save Completed")
+        return "Save Completed"
+    elif 167 > x >= 128:
         # load save file
         load_file_name = "save.txt"
         load_file = open(load_file_name, "r")
@@ -393,24 +390,26 @@ def check_menu(mouse_position, board):
             for col in range(board.height):
                 board.board[row][col] = int(line[col])
         # debug
-        #print("load")
-    elif 256 - 40 > x >= 172:
+        #print("Load Completed")
+        return "Load Completed"
+    elif 216 > x >= 172:
         # undo button
         # debug
-        #print("undo")
-        return -1
+        #print("Undo")
+        return "Undo"
     elif 281 > x >= 256:
         # exit button
         # debug
-        #print("exit")
+        #print("Exit")
         save_score_on_exit(board)
         pygame.quit()
         quit()
 
-    return
+    # No menu button pressed
+    return ""
 
 def draw_display(display, board):
-    """takes current display and draws the board"""
+    """takes current display and draws the menu, score, and board"""
     bg = pygame.Surface(game_display.get_size())
     bg = bg.convert()
     bg.fill(BOARD_BACKGROUND_COLOR)
@@ -434,11 +433,13 @@ def draw_display(display, board):
     return
 
 def game_loop(screen, board):
-    # initial previous board state
+    # initial previous board state for undo
     prev_board = board.get_board()
     prev_score = board.get_score()
 
+    # initialize game exit and over display message
     game_exit = False
+    message_over_screen = ""
 
     while not game_exit:
 
@@ -449,34 +450,42 @@ def game_loop(screen, board):
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                check_undo = check_menu(pygame.mouse.get_pos(), board)
-                if check_undo == -1:
+                # on mouse button down event, check if menu button is clicked then do action, finally display message
+                message_over_screen = check_menu(pygame.mouse.get_pos(), board)
+                if message_over_screen == "Undo":
                     board.board = prev_board
                     board.score = prev_score
                     draw_display(screen, board)
+            if event.type == pygame.MOUSEBUTTONUP:
+                # have a string to display over screen that goes back to blank on the mouse up event
+                message_over_screen = ""
             if event.type == pygame.KEYDOWN:
+                # check left, right, up, down and aswd keys to play game
                 # store previous board
                 prev_board = board.get_board()
                 prev_score = board.get_score()
-                # check events
-                if event.key == pygame.K_LEFT:
+                # check keys then board shift
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     board.shift_board_left()
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     board.shift_board_right()
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     board.shift_board_up()
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     board.shift_board_down()
                 # check if board state changed, then update
                 if prev_board != board.get_board():
                     board.update_board()
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                # pass on key up
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP \
+                        or event.key == pygame.K_DOWN or event.key == pygame.K_a or event.key == pygame.K_d \
+                        or event.key == pygame.K_w or event.key == pygame.K_s:
                     pass
 
         # view board
         draw_display(screen, board)
-        #pygame.display.update()
+        draw_message_over_screen(screen, message_over_screen)
         game_exit = board.is_game_finished()
 
 if __name__ == "__main__":
@@ -486,7 +495,7 @@ if __name__ == "__main__":
     game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT + DISPLAY_MENU_SIZE + DISPLAY_UPPER_PANEL_OFFSET))
     pygame.display.set_caption('2048')
 
-    # backgroud
+    # background
     background = pygame.Surface(game_display.get_size())
     background = background.convert()
     background.fill(BOARD_BACKGROUND_COLOR)
@@ -500,6 +509,7 @@ if __name__ == "__main__":
 
     draw_display(game_display, board)
 
+    # main game loop
     game_loop(game_display, board)
     save_score_on_exit(board)
     pygame.quit()
