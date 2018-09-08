@@ -2,6 +2,15 @@
 
 Implementation of the game 2048 in python.  Has features like save/load game and undo last move.
 
+
+<img src="https://user-images.githubusercontent.com/37717810/45250972-0d9d2680-b2f3-11e8-8a26-7f181c5c95bd.png" width=200>
+
+Screen 1: Example starting game
+
+<img src="https://user-images.githubusercontent.com/37717810/45250921-0a556b00-b2f2-11e8-8339-b9744aae78dc.png" width=200>
+
+Screen 2: Saved current game to **save.txt**.
+
 ## Getting Started
 
 To get a copy of the project up and running, first clone the project and enter the folder
@@ -21,33 +30,17 @@ pip install pygame
 
 ### Running
 
-If you are on a **system with make**, just run
-
-```
-make run menu
-```
-for the version with a menu or
-
-```
-make run
-```
-for no menu
-
-If your system does not have make, run
-
-```
-python twenty_forty_eight.py -menu="on"
-```
-for the version with a menu or
+Run the game using
 
 ```
 python twenty_forty_eight.py
 ```
-for no menu
 
+If you are on a **system with make**, just run
 
-Put menu and no menu screen shots here
-
+```
+make run
+```
 
 ## Running the tests
 
@@ -63,7 +56,7 @@ python -m unittest test_board_class.py.py
 
 ### Break down of unit tests
 
-Tests the board class's 4 shifting methods, is board full method,  etc
+Tests the board class's 4 shifting methods and associated methods
 
 ## Author
 
