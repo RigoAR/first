@@ -1,5 +1,6 @@
 import pygame
 import random
+from copy import deepcopy
 
 # Color Definitions
 BLACK = (0, 0, 0)
@@ -50,14 +51,10 @@ class Board:
 
     def get_board(self):
         """deep copy and return board"""
-        new_board = [[0 for i in range(self.width)] for j in range(self.height)]
-        for i in range(self.width):
-            for j in range(self.height):
-                new_board[i][j] = self.board[i][j]
-        return new_board
+        return deepcopy(self.board)
 
     def set_board(self, board):
-        self.board = board
+        self.board = deepcopy(board)
         return True
 
     def is_board_full(self):
@@ -453,7 +450,7 @@ def game_loop(screen, board):
                 # on mouse button down event, check if menu button is clicked then do action, finally display message
                 message_over_screen = check_menu(pygame.mouse.get_pos(), board)
                 if message_over_screen == "Undo":
-                    board.board = prev_board
+                    board.set_board(prev_board)
                     board.score = prev_score
                     draw_display(screen, board)
             if event.type == pygame.MOUSEBUTTONUP:

@@ -1,4 +1,4 @@
-# Working on python 2.7
+.PHONY: run test clean
 
 # Run 2048
 run:
@@ -6,10 +6,8 @@ run:
 
 # Run unit tests
 test:
-	python -m unittest test_board_class.py.py
+	python -m unittest test_board_class
 
 # clean
 clean:
 	rm -f twenty_forty_eight.pyc save.txt top_score.txt
-
-.PHONY: clean

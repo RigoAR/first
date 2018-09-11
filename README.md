@@ -1,13 +1,14 @@
  # 2048
 
-Implementation of the game 2048 in python.  Has features like save/load game and undo last move.
+Implementation of the game 2048 in python.  Has features like save/load game and undo last move.  Tested and working on 
+OSX and Debian using python2.7.
 
 
-<img src="https://user-images.githubusercontent.com/37717810/45250972-0d9d2680-b2f3-11e8-8a26-7f181c5c95bd.png" width=200>
+<img src="https://user-images.githubusercontent.com/37717810/45250972-0d9d2680-b2f3-11e8-8a26-7f181c5c95bd.png" width=300>
 
 Screen 1: Example starting game
 
-<img src="https://user-images.githubusercontent.com/37717810/45250921-0a556b00-b2f2-11e8-8339-b9744aae78dc.png" width=200>
+<img src="https://user-images.githubusercontent.com/37717810/45250921-0a556b00-b2f2-11e8-8339-b9744aae78dc.png" width=300>
 
 Screen 2: Saved current game to **save.txt**.
 
@@ -42,7 +43,7 @@ If you are on a **system with make**, just run
 make run
 ```
 
-## Running the tests
+### Running the tests
 
 ```
 make test
@@ -57,7 +58,3 @@ python -m unittest test_board_class.py.py
 ### Break down of unit tests
 
 Tests the board class's 4 shifting methods and associated methods
-
-## Author
-
-* **Jason Driver** 
