@@ -43,6 +43,14 @@ If you are on a **system with make**, just run
 make run
 ```
 
+### Gameplay
+Game supports both **arrow keys** and **wasd keys**.  Combine tiles by shifting until you reach a tile with value 2048.  
+
+In addition to saving your current game and loading it later, you can also allow load any game board you want as long as
+it is the correct format using **Load**.  See the correct format by using the **Save** feature.  If you want to make the
+game harder, you can change the win condition by changing the WINNING_SCORE variable at the top of the 
+twenty_forty_eight file.
+
 ### Running the tests
 
 ```
