@@ -2,6 +2,9 @@ import pygame
 import random
 from copy import deepcopy
 
+# Set winning score
+WINNING_SCORE = 2048
+
 # Color Definitions
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -158,8 +161,18 @@ class Board:
                 self.board[i][j] = new_col_arr[self.width - 1 - i]
         return
 
+    def top_tile_value(self):
+        value_top_tile = 0
+        for i in range(self.width):
+            for j in range(self.height):
+                if value_top_tile < self.board[i][j]:
+                    value_top_tile = self.board[i][j]
+        return value_top_tile
+
     def is_game_finished(self):
         """checks to see if the game is over, checks each element in board if spot to it's right and bottom are equal"""
+        if self.top_tile_value() == WINNING_SCORE:
+            return True
         for i in range(self.width):
             for j in range(self.height):
                 if self.board[i][j] == 0:
@@ -405,6 +418,23 @@ def check_menu(mouse_position, board):
     # No menu button pressed
     return ""
 
+def check_menu_exit_only(mouse_position, board):
+    x, y = mouse_position
+
+    # debug
+    #print("{} {}".format(x, y))
+
+    if 281 > x >= 256:
+        # exit button
+        # debug
+        #print("Exit")
+        save_score_on_exit(board)
+        pygame.quit()
+        quit()
+
+    # No menu button pressed
+    return ""
+
 def draw_display(display, board):
     """takes current display and draws the menu, score, and board"""
     bg = pygame.Surface(game_display.get_size())
@@ -430,6 +460,8 @@ def draw_display(display, board):
     return
 
 def game_loop(screen, board):
+    """main game loop"""
+
     # initial previous board state for undo
     prev_board = board.get_board()
     prev_score = board.get_score()
@@ -485,6 +517,36 @@ def game_loop(screen, board):
         draw_message_over_screen(screen, message_over_screen)
         game_exit = board.is_game_finished()
 
+def game_exit(screen, board):
+    draw_display(game_display, board)
+    game_exit_message = ""
+    if board.top_tile_value() == WINNING_SCORE:
+        game_exit_message += "You Won!"
+    else:
+        game_exit_message += "You Lost :("
+    draw_message_over_screen(screen, game_exit_message)
+    save_score_on_exit(board)
+
+    # exit option B, game auto exits after 15 seconds
+    #pygame.quit()
+    #pygame.time.delay(15000)
+    #pygame.quit()
+    #quit()
+
+    # exit option A
+    # manually have to exit game with X or "exit" button
+    while True:
+        # event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                save_score_on_exit(board)
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # on mouse button down event, check if menu button is clicked then do action, finally display message
+                check_menu_exit_only(pygame.mouse.get_pos(), board)
+    return True
+
 if __name__ == "__main__":
     pygame.init()
 
@@ -508,6 +570,8 @@ if __name__ == "__main__":
 
     # main game loop
     game_loop(game_display, board)
-    save_score_on_exit(board)
+
+    # game exit
+    game_exit(game_display, board)
     pygame.quit()
     quit()

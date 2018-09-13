@@ -306,6 +306,15 @@ class TestBoard(unittest.TestCase):
         self.b_full.set_number(2, 3, 0)
         self.assertFalse(self.b_full.is_game_finished())
 
+    def test_top_tile_value(self):
+        self.assertTrue(self.b_full.top_tile_value() == 16)
+        self.b_full.set_number(0, 0, 100)
+        self.assertTrue(self.b_full.top_tile_value() == 100)
+        self.b_full.set_number(0, 1, 100)
+        self.assertTrue(self.b_full.top_tile_value() == 100)
+        self.b_full.set_number(2, 2, 2048)
+        self.assertTrue(self.b_full.top_tile_value() == 2048)
+
     def test_get_score(self):
         self.b_full.score = 20
         board_score = self.b_full.get_score()
