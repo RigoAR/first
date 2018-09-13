@@ -517,7 +517,7 @@ def game_loop(screen, board):
         draw_message_over_screen(screen, message_over_screen)
         game_exit = board.is_game_finished()
 
-def game_exit(screen, board):
+def game_over(screen, board):
     draw_display(game_display, board)
     game_exit_message = ""
     if board.top_tile_value() == WINNING_SCORE:
@@ -571,7 +571,7 @@ if __name__ == "__main__":
     # main game loop
     game_loop(game_display, board)
 
-    # game exit
-    game_exit(game_display, board)
+    # game over
+    game_over(game_display, board)
     pygame.quit()
     quit()
