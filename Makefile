@@ -10,4 +10,4 @@ test:
 
 # clean
 clean:
-	rm -f twenty_forty_eight.pyc save.txt top_score.txt
+	rm -f twenty_forty_eight.pyc test_board_class.pyc save.txt top_score.txt
