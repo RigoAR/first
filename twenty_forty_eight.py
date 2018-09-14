@@ -432,8 +432,7 @@ def check_menu_exit_only(mouse_position, board):
         pygame.quit()
         quit()
 
-    # No menu button pressed
-    return ""
+    return True
 
 def draw_display(display, board):
     """takes current display and draws the menu, score, and board"""
@@ -573,5 +572,6 @@ if __name__ == "__main__":
 
     # game over
     game_over(game_display, board)
+    save_score_on_exit(board)
     pygame.quit()
     quit()
