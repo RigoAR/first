@@ -304,7 +304,8 @@ def get_current_top_score():
         ts_file.close()
     except IOError:
         top_score_string = ""
-        print("No top score available")
+        # debug
+        #print("No top score available")
         return -1
     # debug
     #print(top_score_string)
@@ -317,6 +318,7 @@ def set_current_top_score(score):
         ts_file.close()
     except IOError:
         print("Topscore save failed")
+        return -1
     return True
 
 def save_score_on_exit(board):
@@ -522,7 +524,7 @@ def game_over(screen, board):
     if board.top_tile_value() == WINNING_SCORE:
         game_exit_message += "You Won!"
     else:
-        game_exit_message += "You Lost :("
+        game_exit_message += "You Lost"
     draw_message_over_screen(screen, game_exit_message)
     save_score_on_exit(board)
 
