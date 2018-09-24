@@ -40,7 +40,7 @@ python twenty_forty_eight.py
 If you are on a __system with make__, just run
 
 ```
-make run
+make
 ```
 
 ### Gameplay
