@@ -1,7 +1,9 @@
  # 2048
 
-Implementation of the game 2048 in python.  Has features like save/load game and undo last move.  Tested and working on 
-OSX and Debian using python2.7.
+Implementation of the game 2048 in python.  2048 is a single player sliding block puzzle game involving moving tiles around
+a 4x4 board in the interest of making a tile with the numerical value of 2048.  The rules can be found on
+www.wikihow.com/Beat-2048.  This implementation has features like save/load game, top score, and undo last move.  This
+python source code has been successfully run and tested on OSX and Debian using python2.7.
 
 
 <img src="https://user-images.githubusercontent.com/37717810/45250972-0d9d2680-b2f3-11e8-8a26-7f181c5c95bd.png" width=300>
@@ -14,7 +16,7 @@ Screen 2: Saved current game to **save.txt**.
 
 ## Getting Started
 
-To get a copy of the project up and running, first clone the project and enter the folder
+To get a copy of the game from github start by cloning the jasondriver/2048 directory as follows
 
 ```
 git clone https://github.com/jasondriver/2048
@@ -23,7 +25,7 @@ cd 2048
 
 ### Prerequisites
 
-You will need the **pygame** package for this project.  To install:
+You will need a python interpreter on your computer and the **pygame** package.  To install pygame using pip, execute:
 
 ```
 pip install pygame
@@ -44,12 +46,17 @@ make
 ```
 
 ### Gameplay
-Game supports both **arrow keys** and **wasd keys**.  Combine tiles by shifting until you reach a tile with value 2048.  
+Game supports both **arrow keys** and **"w", "a", "s", "d" keys** function as arrows.  When two tiles with the same number
+touch, they merge into one.  Combine tiles by shifting until you reach a tile with value 2048.  
 
-In addition to saving your current game and loading it later, you can also load any game board you want as long as
-it is the correct format using **Load**.  See the correct format by using the **Save** button and looking at save.txt.
+### Save/Load
 
-If you want to make the game harder:
+In addition to saving your current game and loading it later, you can also **load** any prior game board you want as long as
+it was saved by this program.
+
+### Modifying the game
+
+If you want to make the game harder or easier:
 
 1. **Change the win condition** by changing the *WINNING_SCORE* variable at the top
 of the twenty_forty_eight file.  
@@ -60,10 +67,10 @@ of the twenty_forty_eight file.
 3. **Change the board setup on start** by changing the *board.update()* methods in *main* under the comment "# 
 initialize board". 
 
-### Running the tests
+### Running the unit tests
 
 ```
-python -m unittest test_board_class.py.py
+python -m unittest test_board_class.py
 ```
 
 or
@@ -72,6 +79,4 @@ or
 make test
 ```
 
-### Break down of unit tests
-
-Tests the board class's 4 shifting methods and associated methods
+Tests the board class's 4 shifting methods, associated methods, etc
