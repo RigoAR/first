@@ -4,7 +4,7 @@ public class Main {
         System.out.println("The average is: " + average(numbers));
     }
 
-    // Fixed average function
+    // Fixed average function with explanation this time
     public static double average(int[] nums) {
         double sum = 0; // Initialize sum
         for (int num : nums) {
