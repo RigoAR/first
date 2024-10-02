@@ -1,1 +1,2 @@
 Hello, world
+Adding a new line.
