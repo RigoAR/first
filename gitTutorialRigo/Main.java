@@ -4,9 +4,13 @@ public class Main {
         System.out.println("The average is: " + average(numbers));
     }
 
-    // Non-working average function (needs a fix)
+    // Fixed average function
     public static double average(int[] nums) {
-        // Placeholder: This function is incomplete and currently returns 0
-        return 0;
+        double sum = 0; // Initialize sum
+        for (int num : nums) {
+            sum += num; // Add each number to the sum
+        }
+        return sum / nums.length; // Return the average
     }
 }
+
